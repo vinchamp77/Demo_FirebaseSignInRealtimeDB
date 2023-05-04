@@ -13,6 +13,7 @@ import vtsen.hashnode.dev.signindemoapp.ui.screens.MainScreen
 import vtsen.hashnode.dev.signindemoapp.ui.theme.NewEmptyComposeAppTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         setupSplashScreen()
