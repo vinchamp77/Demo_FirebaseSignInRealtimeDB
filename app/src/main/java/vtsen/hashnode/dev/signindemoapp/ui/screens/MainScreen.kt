@@ -62,12 +62,14 @@ fun MainScreen() {
 
     if (showSignIn) {
         SignInScreen { result ->
-            val response = result.idpResponse
+            // (4) Handle the sign-in result callback
             if (result.resultCode == ComponentActivity.RESULT_OK) {
                 signInStatus = "Signed In"
                 val user = FirebaseAuth.getInstance().currentUser
                 userId = user!!.uid
+
             } else {
+                val response = result.idpResponse
                 signInStatus = if (response == null) {
                     "Not Signed In"
                 } else {
@@ -75,6 +77,7 @@ fun MainScreen() {
                     "Failed - Error Code: $errorCode"
                 }
             }
+
             showSignIn = false
         }
     }

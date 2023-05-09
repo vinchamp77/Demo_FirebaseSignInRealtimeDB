@@ -9,16 +9,20 @@ import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 
 @Composable
 fun SignInScreen(onSignInResult: (FirebaseAuthUIAuthenticationResult) -> Unit) {
+
+    // (1) Create ActivityResultLauncher
     val launcher = rememberLauncherForActivityResult(
         contract = FirebaseAuthUIActivityResultContract(),
         onResult = onSignInResult
     )
 
+    // (2) Choose authentication providers
     val providers = arrayListOf(
         AuthUI.IdpConfig.GoogleBuilder().build(),
         AuthUI.IdpConfig.EmailBuilder().build(),
     )
 
+    // (3) Create and launch sign-in intent
     val intent = AuthUI.getInstance()
         .createSignInIntentBuilder()
         .setAvailableProviders(providers)
