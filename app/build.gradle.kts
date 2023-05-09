@@ -69,8 +69,13 @@ dependencies {
 
     implementation("com.github.vinchamp77:buildutils:0.0.8")
 
+    //Note: doesn't seem to work
+    /*
+    implementation (platform("com.google.firebase:firebase-bom:32.0.0"))
+    implementation ("com.firebaseui:firebase-ui-auth")
+    implementation ("com.google.android.gms:play-services-auth") //required by email/passwd auth
+    */
 
-    //implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
     implementation ("com.firebaseui:firebase-ui-auth:7.2.0")
-
+    implementation ("com.google.android.gms:play-services-auth:20.5.0") //required by email/passwd auth
 }

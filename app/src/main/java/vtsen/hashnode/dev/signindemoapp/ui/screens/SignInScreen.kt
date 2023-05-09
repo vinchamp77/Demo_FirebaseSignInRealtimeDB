@@ -16,6 +16,7 @@ fun SignInScreen(onSignInResult: (FirebaseAuthUIAuthenticationResult) -> Unit) {
 
     val providers = arrayListOf(
         AuthUI.IdpConfig.GoogleBuilder().build(),
+        AuthUI.IdpConfig.EmailBuilder().build(),
     )
 
     val intent = AuthUI.getInstance()
