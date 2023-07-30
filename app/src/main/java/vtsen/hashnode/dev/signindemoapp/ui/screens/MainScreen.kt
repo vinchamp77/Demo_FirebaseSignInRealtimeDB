@@ -18,16 +18,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.firebase.ui.auth.AuthUI
-import com.google.firebase.auth.FirebaseAuth
 import vtsen.hashnode.dev.signindemoapp.ui.theme.NewEmptyComposeAppTheme
 
 @Composable
 fun MainScreen() {
 
+    val viewModel: MainViewModel = viewModel()
+
     var showSignIn by remember {mutableStateOf(false)}
-    var signInStatus by remember{ mutableStateOf("Not Signed-in") }
-    var userId by remember{ mutableStateOf("") }
+
+    val signInStatus by viewModel.signInStatus.collectAsStateWithLifecycle()
+    val signedInUser by viewModel.signedInUser.collectAsStateWithLifecycle()
+    val userDataFromDB by viewModel.userDataFromDB.collectAsStateWithLifecycle()
+    val userDataFlowFromDB by viewModel.userDataFlowFromDB.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -41,7 +47,7 @@ fun MainScreen() {
         Text("Sign-in Status: $signInStatus")
 
         Spacer(Modifier.padding(2.dp))
-        Text("User Id: $userId")
+        Text("User Id: ${signedInUser?.uid}")
 
         Spacer(Modifier.padding(2.dp))
         Button(onClick = {
@@ -53,35 +59,63 @@ fun MainScreen() {
         Spacer(Modifier.padding(2.dp))
         Button(onClick = {
             AuthUI.getInstance().signOut(context)
-            signInStatus = "Not Signed-in"
-            userId = ""
+            viewModel.onSignOut()
         }) {
             Text("Sign Out")
         }
+
+        Spacer(Modifier.padding(2.dp))
+        Button(onClick = {
+            viewModel.writeToDatabase()
+        }) {
+            Text("Write Data")
+        }
+
+        Spacer(Modifier.padding(2.dp))
+        Button(onClick = {
+            viewModel.readFromDatabase()
+        }) {
+            Text("Read Data")
+        }
+
+        Spacer(Modifier.padding(2.dp))
+        Text("User Data (One-time Read)")
+        Text("----------------------------------------------")
+        Text("Name: ${userDataFromDB?.name}")
+        Text("Age: ${userDataFromDB?.age}")
+        Text("Fruits: ${userDataFromDB?.favoriteFood}")
+
+        Spacer(Modifier.padding(2.dp))
+        Text("User Data (Continuous Read - Flow)")
+        Text("----------------------------------------------")
+        Text("Name: ${userDataFlowFromDB?.name}")
+        Text("Age: ${userDataFlowFromDB?.age}")
+        Text("Fruits: ${userDataFlowFromDB?.favoriteFood}")
     }
 
     if (showSignIn) {
         SignInScreen { result ->
             // (4) Handle the sign-in result callback
             if (result.resultCode == ComponentActivity.RESULT_OK) {
-                signInStatus = "Signed In"
-                val user = FirebaseAuth.getInstance().currentUser
-                userId = user!!.uid
-
+                viewModel.onSignedIn()
             } else {
                 val response = result.idpResponse
-                signInStatus = if (response == null) {
-                    "Not Signed In"
+                if (response == null) {
+                    viewModel.onSignInCancel()
                 } else {
                     val errorCode = response.getError()?.getErrorCode()
-                    "Failed - Error Code: $errorCode"
+                    viewModel.onSignInError(errorCode)
                 }
             }
 
             showSignIn = false
         }
     }
+
+
 }
+
+
 
 @Preview(showBackground = true)
 @Composable
