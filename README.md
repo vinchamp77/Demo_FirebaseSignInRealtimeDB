@@ -4,3 +4,4 @@
 
 ## Articles
 - [Simple Firebase Sign-in UI Demo App](https://vtsen.hashnode.dev/simple-firebase-sign-in-ui-demo-app)
+- [Integrate Firebase Realtime Database and User Authentication into your Android App](https://vtsen.hashnode.dev/integrate-firebase-realtime-database-and-user-authentication-into-your-android-app)
